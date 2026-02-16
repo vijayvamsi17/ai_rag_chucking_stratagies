@@ -5,7 +5,7 @@ from langchain_community.document_loaders.generic import GenericLoader
 
 def load_documents():
     # Load documents from a directory
-    if not os.path.exists("./docs/"):
+    if not os.path.exists("./docs/personal/"):
         print(
             "Directory './docs/' does not exist. Please create it and add your documents.")
         return []
