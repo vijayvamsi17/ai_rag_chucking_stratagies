@@ -2,7 +2,7 @@ import os
 from langchain_community.document_loaders import FileSystemBlobLoader
 from langchain_community.document_loaders.parsers import PyPDFParser
 from langchain_community.document_loaders.generic import GenericLoader
-from langchain_text_splitters import CharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
 def load_documents():
@@ -23,7 +23,7 @@ def load_documents():
         print(f"Documents: {i + 1}:")
         print(f"Source: {doc.metadata.get('source')}")
         print(f"Content length: {len(doc.page_content)} characters")
-        print(f"Content: {doc.page_content[:100]}...") # Print the first 100 characters of the content
+        print(f"Content: {doc.page_content}") # Print the first 100 characters of the content
         print(f"Metadata: {doc.metadata}")
 
     return documents
@@ -31,9 +31,10 @@ def load_documents():
 
 def chunk_documents(documents, chunk_size=800, chunk_overlap=0):
     print("Chunking documents...")
-    text_splitter = CharacterTextSplitter(
-        chunk_size=chunk_size, chunk_overlap=chunk_overlap,
-        separator="\n" # ["\n\n", "\n", ". ", " ", ""]
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size, 
+        chunk_overlap=chunk_overlap,
+        separators=["\n\n", "\n", ". ", " ", ""]
         )
     chunks = text_splitter.split_documents(documents)
 
@@ -44,7 +45,7 @@ def chunk_documents(documents, chunk_size=800, chunk_overlap=0):
             print(f"Chunk {i + 1}:")
             print(f"Source: {chunk.metadata.get('source')}")
             print(f"Content length: {len(chunk.page_content)} characters")
-            print(f"Content: {chunk.page_content[:100]}...") # Print the first 100 characters of the chunk content
+            print(f"Content: {chunk.page_content}.") # Print the first 100 characters of the chunk content
             print("-" * 50)
         if len(chunks) > 5:
             print(f"... and {len(chunks) - 5} more chunks.")
